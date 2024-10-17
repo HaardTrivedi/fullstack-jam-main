@@ -92,7 +92,7 @@ const CompanyTable = (props: { selectedCollectionId: string, selectedCollectionN
         sx={{ mb: 1, marginX: 2, width: 100 }}
         onClick={handleDislike}
       >
-        Dislike
+        Unlike
       </Button>
       <Button
         variant="contained"

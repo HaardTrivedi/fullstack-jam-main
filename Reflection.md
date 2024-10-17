@@ -7,11 +7,26 @@ This document showcases the my assumptions, approach and future implementations 
 3. Companies cannot be removed from *My List*
 4. Companies can be present in multiple collections simultaneously
 5. *Liked Companies* is a special collection that exists by default
+6. New companies may not be added by the use because they are an investor
 
 #### Approach
-1.
-2.
-3.
-4.
-5.
+1. Create 2 buttons: 1 for Like and 1 for Unliking
+2. Disable buttons by default and enable when row are selected
+3. Like companies can be liked again but it won't make a difference
+4. Unliked companies can be unliked again but it won't make a difference
+5. 1 button to add to custom collection that opens a dialog box to select from collections. Pressing add will add selected companies to custom collection
+6. *Add to Collection* button disbaled by default and enabled when rows are selected
+7. 1 button to remove selected companies from active collection
+8. *Remove from Collection* button disbaled by default and enabled when rows are selected. It will always be disabled when the active collection is *My List* since no companies can be deleted from it
+9. Pressing any of the buttons will redirect user to *Status* page
+10. Status page to show pending database operations and current progression in percent. If there is an operation in progress, a laoding bar is visible. All operations in progress listed at the top
+11. *Add Collection* page includes form to allow user to add custom collection. Collection name must be unique and not empty. Success and error message banner pops up after *Add* button is pressed.
+12. Add button is only enabled when textbox is not empty
 
+#### Future Considerations
+1. Create views for different types of users; investor (current) and admin
+2. Only enable *Like* button if no company that is already liked is present
+3. Only enable *Dislike* button if all companies selected are liked
+4. Admin view can give user the functionality to add companies
+5. Add retention period for operations in *Status* page
+6. Add progress bar for operations in *Status* page with the existing percentage
