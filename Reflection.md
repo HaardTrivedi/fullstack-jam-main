@@ -23,6 +23,12 @@ This document showcases the my assumptions, approach and future implementations 
 11. *Add Collection* page includes form to allow user to add custom collection. Collection name must be unique and not empty. Success and error message banner pops up after *Add* button is pressed.
 12. Add button is only enabled when textbox is not empty
 
+#### Tradeoffs
+1. Perform all add and remove to collection operations asynchronously regardless of the size of the data to reduce any latency
+2. Redirect user to *Status* page after like, unlike, add to and remove from collection regardless of size
+3. Liked and non-like companies can have the same operation performed on them. Verification of whether an association exists will be done on the database end. It might increase the latency a bit but simplify user experience for the first iteration
+4. *Like* & *Add to Collection* and *Unlike* & *Remove from Collection* APIs will be the respectively, the only difference being the Collection name being passed to decrease ode duplication
+
 #### Future Considerations
 1. Create views for different types of users; investor (current) and admin
 2. Only enable *Like* button if no company that is already liked is present
@@ -30,3 +36,4 @@ This document showcases the my assumptions, approach and future implementations 
 4. Admin view can give user the functionality to add companies
 5. Add retention period for operations in *Status* page
 6. Add progress bar for operations in *Status* page with the existing percentage
+7. Add like icon instead of current boolean for liked companies, none if they are not liked
