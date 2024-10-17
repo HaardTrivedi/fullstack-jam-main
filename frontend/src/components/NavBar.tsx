@@ -1,6 +1,5 @@
 import { CssBaseline } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import React from "react";
 
 import { NavLink as Link } from "react-router-dom";
 import styled from "styled-components";

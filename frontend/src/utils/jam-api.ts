@@ -75,6 +75,7 @@ export async function getCollectionsMetadata(): Promise<ICollection[]> {
     }
 }
 
+// Add company to specified collection
 export async function addToCollection(name: string, companies: ICompany[]): Promise<string> {
     try {
         // console.log(companies);
@@ -87,6 +88,7 @@ export async function addToCollection(name: string, companies: ICompany[]): Prom
     }
 }
 
+// Add a new collection
 export async function addCollection(name: string): Promise<string> {
     try {
         // console.log(companies);
@@ -99,6 +101,7 @@ export async function addCollection(name: string): Promise<string> {
     }
 }
 
+// Remove from specified collection
 export async function removeFromCollection(name: string, companies: ICompany[]): Promise<string> {
     try {
         // console.log(companies);
@@ -111,6 +114,7 @@ export async function removeFromCollection(name: string, companies: ICompany[]):
     }
 }
 
+// Get status of all add and delete operations
 export async function getStatus(): Promise<IStatusMetadata> {
     try {
         console.log('Here');
@@ -118,14 +122,16 @@ export async function getStatus(): Promise<IStatusMetadata> {
         var data = response.data;
         data.inProgress = false;
         for (var row of data.statuses) {
+            // Convert processed and total to percentage
             row.progress = String(Math.round((row.count / row.total) * 100)) + "%";
+            // User friendly status of operation
             if (row.status == 'done') {
                 row.status = "Completed"
             } else if (row.status == 'in_progress') {
                 row.status = "In Progress"
                 data.inProgress = true;
             }
-
+            // User friendly status of action
             if (row.action == 'add') {
                 row.action = "Add"
             } else if (row.action == 'remove') {

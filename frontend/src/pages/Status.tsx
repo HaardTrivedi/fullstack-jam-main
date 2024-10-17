@@ -20,7 +20,7 @@ const Status = () => {
     const [pageSize, setPageSize] = useState(25);
     const [progress, setProgress] = useState<boolean>(true);
     const [time, setTime] = useState(new Date());
-
+    // Refresh page every 2500 ms to get latest status
     useEffect(() => {
         const interval = setInterval(() => {
             setTime(new Date());
@@ -57,7 +57,7 @@ const Status = () => {
                 ]}
                 initialState={{
                     sorting: {
-                        sortModel: [{ field: 'progress', sort: 'desc' }],
+                        sortModel: [{ field: 'status', sort: 'desc' }],
                     },
                     pagination: {
                         paginationModel: { page: 0, pageSize: 25 },

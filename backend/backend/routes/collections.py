@@ -86,14 +86,14 @@ def get_company_collection_by_id(
     )
 
 
+# Add company to company-collection association database
 async def like_company(
     company_ids: list[str],
     collection_name: str,
     job_id: str,
     db: Session = Depends(database.get_db)
 ):
-    # results = db.query(database.Company).offset(offset).limit(limit).all()
-    print(company_ids)
+    # Get collection id using name
     liked_list = (
         db.query(database.CompanyCollection)
         .filter(database.CompanyCollection.collection_name == collection_name)
@@ -101,11 +101,11 @@ async def like_company(
     )
     job_info = context['jobs'][job_id]
     job_info['id'] = job_id
-    job_info['total'] = len(company_ids)
+    job_info['total'] = len(company_ids)  # Total add operations to perform
     job_info['collection'] = collection_name
     job_info['action'] = 'add'
     for count, company_id in enumerate(company_ids, 1):
-        job_info['count'] = count
+        job_info['count'] = count  # Update count of adds completed
         job_info['status'] = 'in_progress'
         liked_associations = (
             db.query(database.CompanyCollectionAssociation)
@@ -114,8 +114,7 @@ async def like_company(
                 database.CompanyCollectionAssociation.collection_id == liked_list.id
             ).all()
         )
-        # print(context)
-        # print(len(liked_associations))
+        # Add if it doesn't exist in table already
         if len(liked_associations) == 0:
             association = database.CompanyCollectionAssociation(
                 company_id=company_id,
@@ -137,18 +136,19 @@ async def like_company(
             collection_id=liked_list.id
         )
         db.add(association)
-    job_info['status'] = 'done'
+    job_info['status'] = 'done'  # Mark as done
     db.commit()
 
 
+# Remove company from company-collection association database
 async def dislike_company(
     company_ids: list[str],
     collection_name: str,
     job_id: str,
     db: Session = Depends(database.get_db)
 ):
-    # results = db.query(database.Company).offset(offset).limit(limit).all()
-    print(company_ids)
+
+    # Get collection id using name
     liked_list = (
         db.query(database.CompanyCollection)
         .filter(database.CompanyCollection.collection_name == collection_name)
@@ -156,12 +156,13 @@ async def dislike_company(
     )
     job_info = context['jobs'][job_id]
     job_info['id'] = job_id
-    job_info['total'] = len(company_ids)
+    job_info['total'] = len(company_ids)  # Total delete operations to perform
     job_info['collection'] = collection_name
     job_info['action'] = 'remove'
     for count, company_id in enumerate(company_ids, 1):
         job_info['count'] = count
         job_info['status'] = 'in_progress'
+        # Remove if it exists in table
         liked_associations = (
             db.query(database.CompanyCollectionAssociation)
             .filter(database.CompanyCollectionAssociation.company_id == company_id)
@@ -169,8 +170,6 @@ async def dislike_company(
                 database.CompanyCollectionAssociation.collection_id == liked_list.id
             ).first()
         )
-        # print("Context:", job_info)
-        # print("Liked Assoc", (liked_associations))
         if liked_associations is not None:
             db.delete(liked_associations)
         await sleep(1)
@@ -184,10 +183,11 @@ async def dislike_company(
     )
     if liked_associations is not None:
         db.delete(liked_associations)
-    job_info['status'] = 'done'
+    job_info['status'] = 'done'  # Mark operation as done
     db.commit()
 
 
+# Add to collection
 @router.post("/{collection_name}/like")
 async def add_company_collection_by_id(
     collection_name: str,
@@ -197,18 +197,19 @@ async def add_company_collection_by_id(
 ):
     id = str(uuid.uuid4())
     context['jobs'][id] = {}
-    # print(companies)
+
     company_ids = []
     for company in companies:
         company_ids.append(company.id)
 
-    # print(collection_id, companies)
+    # Run async operation to add to database otherwise it will take too long
     run_coroutine_threadsafe(like_company(
         company_ids, collection_name, id, db), loop=get_running_loop())
     db.commit()
     return {"id": id}
 
 
+# Delete from collection
 @router.delete("/{collection_name}/dislike")
 async def add_company_collection_by_id(
     collection_name: str,
@@ -221,12 +222,15 @@ async def add_company_collection_by_id(
     company_ids = []
     for company in companies:
         company_ids.append(company.id)
+
+    # Run async operation to remove from database otherwise it will take too long
     run_coroutine_threadsafe(dislike_company(
         company_ids, collection_name, id, db), loop=get_running_loop())
     db.commit()
     return {"id": id}
 
 
+# Get all operations statuses
 @router.get("/{collection_id}/status")
 def status(collection_id: str):
     print(context["jobs"])
@@ -235,17 +239,20 @@ def status(collection_id: str):
     return {"statuses": output}
 
 
+# Add new collection
 @router.post("/{collection_name}/add")
 async def add_collection(
     collection_name: str,
     db: Session = Depends(database.get_db),
 ):
+    # Check if collection name exists already
     collections = (
         db.query(database.CompanyCollection)
         .filter(database.CompanyCollection.collection_name == collection_name)
         .first()
     )
     print(collections)
+    # Add if collection name doesn't exist already
     if collections is None:
         collection = database.CompanyCollection(
             collection_name=collection_name

@@ -30,38 +30,44 @@ const CompanyTable = (props: { selectedCollectionId: string, selectedCollectionN
     setOffset(0);
   }, [props.selectedCollectionId]);
 
+  // Add to Liked Companies collection
   const handleLike = async () => {
     console.log(props.selectedCollectionId, selected);
     console.log(props.selectedCollectionId, selected);
     addToCollection("Liked Companies", selected);
-    navigate('/status');
+    navigate('/status'); // Navigate user to status page
   }
 
+  // Remove from Liked Companies collection
   const handleDislike = async () => {
     console.log(props.selectedCollectionId, selected);
     removeFromCollection("Liked Companies", selected);
-    navigate('/status');
+    navigate('/status'); // Navigate user to status page
   }
 
+  // Open dialog box to add to custom collection
   const handleClickOpen = () => {
     setOpen(true);
   };
 
+  // Cancel; Close dialog box without any action
   const handleClose = () => {
     setOpen(false);
   };
 
+  // Add selected companies to specified collection chosen from dropdown
   const handleAdd = () => {
     setOpen(false);
     console.log(props.selectedCollectionId, selected);
     addToCollection(collection, selected);
-    navigate('/status');
+    navigate('/status'); // Navigate user to status page
   };
 
+  // Remove company from actively selected collection (does not work if My List)
   const handleRemove = () => {
     console.log(props.selectedCollectionId, selected);
     removeFromCollection(props.selectedCollectionName, selected);
-    navigate('/status');
+    navigate('/status'); // Navigate user to status page
   };
 
   const handleChange = (event: SelectChangeEvent) => {
